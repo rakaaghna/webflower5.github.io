@@ -1,3 +1,31 @@
+<?php
+                include 'db.php';
+
+                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                    $customerId = $_POST['id_customer'];
+                    $name = $_POST['nama_customer'];
+                    $phone = $_POST['no_telepon'];
+
+                    if (isset($_POST['addBtn'])) {
+                        $sql = "INSERT INTO customer (id_customer,nama_customer, no_telepon) VALUES ('$customerId','$name', '$phone')";
+                        if ($conn->query($sql) === TRUE) {
+                            echo "<p class='success'>Data customer berhasil ditambahkan!</p>";
+                        } else {
+                            echo "<p class='error'>Error: " . $sql . "<br>" . $conn->error . "</p>";
+                        }
+                    } elseif (isset($_POST['searchBtn'])) {
+                        $sql = "SELECT * FROM customer WHERE id_customer = '$customerId'";
+                        $result = $conn->query($sql);
+                        if ($result->num_rows > 0) {
+                            $customer = $result->fetch_assoc();
+                            echo "<p class='success'>Data Customer:<br>Nama: " . $customer['nama_customer'] . "<br> Nomor Telepon: " . $customer['no_telepon'] . "</p>";
+                        } else {
+                            echo "<p class='error'>Data customer tidak ditemukan.</p>";
+                        }
+                    }
+                }
+?>
+
 <<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,45 +99,18 @@
     <main class="container my-5">
         <div class="row">
             <div class="col-md-6 mx-auto form-container">
-                <?php
-                include 'db.php';
-
-                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                    $customerId = $_POST['id_customer'];
-                    $name = $_POST['nama_customer'];
-                    $phone = $_POST['no_telepon'];
-
-                    if (isset($_POST['addBtn'])) {
-                        $sql = "INSERT INTO customers (nama_customer, no_telepon) VALUES ('$name', '$phone')";
-                        if ($conn->query($sql) === TRUE) {
-                            echo "<p class='success'>Data customer berhasil ditambahkan!</p>";
-                        } else {
-                            echo "<p class='error'>Error: " . $sql . "<br>" . $conn->error . "</p>";
-                        }
-                    } elseif (isset($_POST['searchBtn'])) {
-                        $sql = "SELECT * FROM customers WHERE id_customer = '$customerId'";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) {
-                            $customer = $result->fetch_assoc();
-                            echo "<p class='success'>Data Customer:<br>Nama: " . $customer['nama_customer'] . "<br>Nomor Telepon: " . $customer['no_telepon'] . "</p>";
-                        } else {
-                            echo "<p class='error'>Data customer tidak ditemukan.</p>";
-                        }
-                    }
-                }
-                ?>
                 <form id="customerForm" method="POST" action="customer.php">
                     <div class="form-group">
-                        <label for="customerId">ID Customer:</label>
-                        <input type="text" class="form-control" id="customerId" name="customerId" placeholder="Masukkan ID Customer">
+                        <label for="id_customer">ID Customer:</label>
+                        <input type="text" class="form-control" id="id_customer" name="id_customer" placeholder="Masukkan ID Customer">
                     </div>
                     <div class="form-group">
-                        <label for="name">Nama:</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama" required>
+                        <label for="nama_customer">Nama:</label>
+                        <input type="text" class="form-control" id="nama_customer" name="nama_customer" placeholder="Masukkan Nama" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Nomor Telepon:</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Masukkan Nomor Telepon" required>
+                        <label for="no_telepon">Nomor Telepon:</label>
+                        <input type="tel" class="form-control" id="no_telepon" name="no_telepon" placeholder="Masukkan Nomor Telepon" required>
                     </div>
                     <div class="form-group text-center">
                         <button id="addBtn" type="submit" name="addBtn" class="btn btn-lg btn-gradient-customer">ADD</button>
@@ -124,6 +125,5 @@
     </footer>
 </body>
 </html>
-
 
 
